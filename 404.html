@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting…</title>
+</head>
+<body>
+<script>
+  // GitHub Pages SPA trick — store intended path, redirect to index
+  sessionStorage.setItem('bday_path', location.pathname);
+  location.replace('/birthday/');
+</script>
+</body>
+</html>
