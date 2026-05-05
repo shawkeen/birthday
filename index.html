@@ -3,34 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday Neha 🎂</title>
+  <title>Birthday Card Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --plum: #4a1942;
-      --rose: #c9617a;
-      --gold: #d4a843;
-      --champagne: #f5e6c8;
-      --cream: #fdf8f0;
-      --deep: #1e0a1c;
-      --glass: rgba(255,255,255,0.08);
-      --glass-border: rgba(255,255,255,0.18);
+      --plum: #4a1942; --rose: #c9617a; --gold: #d4a843;
+      --champagne: #f5e6c8; --cream: #fdf8f0; --deep: #1e0a1c;
+      --glass: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.18);
     }
-
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--deep);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
     }
-
-    /* ── Animated mesh background ── */
     .bg-mesh {
       position: fixed; inset: 0; z-index: 0;
       background:
@@ -44,247 +32,195 @@
       0%   { filter: hue-rotate(0deg) brightness(1); }
       100% { filter: hue-rotate(15deg) brightness(1.08); }
     }
-
-    /* ── Floating ambient orbs ── */
     .orb { position: fixed; border-radius: 50%; filter: blur(70px); z-index: 0; animation: orbFloat linear infinite; }
-    .orb1 { width: 300px; height: 300px; background: rgba(201,97,122,0.18); top: -80px; left: -80px; animation-duration: 18s; }
-    .orb2 { width: 250px; height: 250px; background: rgba(212,168,67,0.12); bottom: -60px; right: -60px; animation-duration: 22s; animation-delay: -5s; }
-    .orb3 { width: 180px; height: 180px; background: rgba(107,31,94,0.25); top: 50%; left: 60%; animation-duration: 15s; animation-delay: -9s; }
+    .orb1 { width:300px; height:300px; background:rgba(201,97,122,.18); top:-80px; left:-80px; animation-duration:18s; }
+    .orb2 { width:250px; height:250px; background:rgba(212,168,67,.12); bottom:-60px; right:-60px; animation-duration:22s; animation-delay:-5s; }
+    .orb3 { width:180px; height:180px; background:rgba(107,31,94,.25); top:50%; left:60%; animation-duration:15s; animation-delay:-9s; }
     @keyframes orbFloat {
-      0%   { transform: translate(0,0) scale(1); }
-      33%  { transform: translate(30px,-40px) scale(1.1); }
-      66%  { transform: translate(-20px,20px) scale(0.92); }
-      100% { transform: translate(0,0) scale(1); }
+      0%   { transform:translate(0,0) scale(1); }
+      33%  { transform:translate(30px,-40px) scale(1.1); }
+      66%  { transform:translate(-20px,20px) scale(0.92); }
+      100% { transform:translate(0,0) scale(1); }
     }
+    canvas#confetti { position:fixed; inset:0; pointer-events:none; z-index:10; }
 
-    canvas#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
-
-    /* ── Card ── */
-    .card-wrap { position: relative; z-index: 5; padding: 20px; width: 100%; max-width: 480px; }
-
+    /* ── shared card shell ── */
+    .card-wrap { position:relative; z-index:5; padding:20px; width:100%; max-width:480px; }
     .card {
       background: var(--glass);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--glass-border);
-      border-radius: 28px;
-      padding: 44px 36px 36px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      border-radius: 28px; padding: 44px 36px 36px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.04) inset;
     }
-
     .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 10%; right: 10%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
     }
-
-    /* shimmer sweep */
     .card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%; width: 60%; height: 100%;
-      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
-      animation: shimmer 7s ease-in-out infinite;
-      pointer-events: none;
+      content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.04) 50%, transparent 60%);
+      animation: shimmer 7s ease-in-out infinite; pointer-events:none;
     }
-    @keyframes shimmer { 0%, 100% { left: -100%; } 50% { left: 140%; } }
+    @keyframes shimmer { 0%,100% { left:-100%; } 50% { left:140%; } }
 
-    /* ── Crown badge ── */
     .crown-badge {
-      position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg, #c9617a, #d4a843);
-      color: white;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
-      padding: 6px 22px; border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(212,168,67,0.35);
-      white-space: nowrap;
+      position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+      background: linear-gradient(135deg,#c9617a,#d4a843);
+      color:white; font-size:11px; font-weight:500; letter-spacing:.15em; text-transform:uppercase;
+      padding:6px 22px; border-radius:20px;
+      box-shadow:0 4px 20px rgba(212,168,67,.35); white-space:nowrap;
     }
-
-    /* ── Heading ── */
-    .card-header { text-align: center; margin-bottom: 6px; }
-
     h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 8vw, 2.8rem);
-      font-weight: 600;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #f7d794 0%, #f5c6cb 40%, #c9617a 70%, #d4a843 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.01em;
+      font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,8vw,2.8rem);
+      font-weight:600; line-height:1.1;
+      background:linear-gradient(135deg,#f7d794 0%,#f5c6cb 40%,#c9617a 70%,#d4a843 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-
-    .subtitle {
-      font-size: 12.5px; color: rgba(255,255,255,0.4);
-      letter-spacing: 0.22em; text-transform: uppercase; margin-top: 4px;
-    }
-
-    /* ── Age ticker ── */
+    .subtitle { font-size:12.5px; color:rgba(255,255,255,.4); letter-spacing:.22em; text-transform:uppercase; margin-top:4px; }
     .age-block {
-      margin: 22px 0 18px;
-      text-align: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 14px 20px;
-      position: relative;
+      margin:22px 0 18px; text-align:center;
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:14px 20px; position:relative;
     }
-    .age-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
-    .age-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.9rem;
-      font-weight: 600;
-      color: var(--champagne);
-      letter-spacing: 0.02em;
-    }
+    .age-label { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:4px; }
+    .age-value { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:600; color:var(--champagne); }
     .age-pulse {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #c9617a;
-      box-shadow: 0 0 0 0 rgba(201,97,122,0.6);
-      animation: pulse 2s ease-in-out infinite;
+      position:absolute; right:14px; top:50%; transform:translateY(-50%);
+      width:8px; height:8px; border-radius:50%; background:#c9617a;
+      box-shadow:0 0 0 0 rgba(201,97,122,.6); animation:pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(201,97,122,0.6); }
-      70%  { box-shadow: 0 0 0 8px rgba(201,97,122,0); }
-      100% { box-shadow: 0 0 0 0 rgba(201,97,122,0); }
-    }
-
-    /* ── Joke card ── */
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(201,97,122,.6)} 70%{box-shadow:0 0 0 8px rgba(201,97,122,0)} 100%{box-shadow:0 0 0 0 rgba(201,97,122,.6)} }
     .joke-box {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 16px;
-      padding: 18px 20px;
-      min-height: 80px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+      border-radius:16px; padding:18px 20px; min-height:80px;
+      display:flex; align-items:center; justify-content:center; margin-bottom:20px;
     }
     .joke-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1.07rem;
-      line-height: 1.55;
-      color: rgba(255,255,255,0.82);
-      text-align: center;
-      transition: opacity 0.35s ease;
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      font-size:1.07rem; line-height:1.55; color:rgba(255,255,255,.82);
+      text-align:center; transition:opacity .35s ease;
     }
-    .joke-text.fade { opacity: 0; }
-
-    /* ── Buttons ── */
-    .btn-group { display: flex; flex-direction: column; gap: 10px; }
-
+    .joke-text.fade { opacity:0; }
+    .btn-group { display:flex; flex-direction:column; gap:10px; }
     .btn {
-      width: 100%;
-      border: none; cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      border-radius: 14px;
-      padding: 14px 20px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-      position: relative; overflow: hidden;
-      letter-spacing: 0.02em;
+      width:100%; border:none; cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+      border-radius:14px; padding:14px 20px;
+      transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+      position:relative; overflow:hidden; letter-spacing:.02em;
     }
-    .btn:active { transform: scale(0.97); }
-
+    .btn:active { transform:scale(.97); }
     .btn-wish {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: rgba(255,255,255,0.88);
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+      color:rgba(255,255,255,.88);
     }
-    .btn-wish:hover {
-      background: rgba(255,255,255,0.13);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-
+    .btn-wish:hover { background:rgba(255,255,255,.13); box-shadow:0 4px 20px rgba(0,0,0,.3); }
     .btn-gift {
-      background: linear-gradient(135deg, #c9617a 0%, #9b3060 40%, #d4a843 100%);
-      color: white;
-      box-shadow: 0 6px 28px rgba(201,97,122,0.38);
+      background:linear-gradient(135deg,#c9617a 0%,#9b3060 40%,#d4a843 100%);
+      color:white; box-shadow:0 6px 28px rgba(201,97,122,.38);
     }
-    .btn-gift:hover { filter: brightness(1.1); box-shadow: 0 8px 36px rgba(201,97,122,0.5); }
-
+    .btn-gift:hover { filter:brightness(1.1); box-shadow:0 8px 36px rgba(201,97,122,.5); }
     .btn-gift .btn-ripple {
-      position: absolute; inset: 0;
-      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
-      transform: translateX(-100%);
-      transition: transform 0.5s ease;
+      position:absolute; inset:0;
+      background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%);
+      transform:translateX(-100%); transition:transform .5s ease;
     }
-    .btn-gift:hover .btn-ripple { transform: translateX(100%); }
-
-    /* ── Gift prank result ── */
+    .btn-gift:hover .btn-ripple { transform:translateX(100%); }
     .gift-result {
-      margin-top: 12px;
-      min-height: 36px;
-      text-align: center;
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      font-style: italic;
-      transition: opacity 0.3s ease;
-      line-height: 1.5;
+      margin-top:12px; min-height:36px; text-align:center;
+      font-size:13px; color:rgba(255,255,255,.6); font-style:italic;
+      transition:opacity .3s ease; line-height:1.5;
     }
-
-    /* ── Coin popup ── */
     .coin-popup {
-      position: fixed;
-      pointer-events: none;
-      z-index: 999;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 18px; font-weight: 700;
-      color: #f7d794;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 20px rgba(212,168,67,0.8);
-      animation: coinRise 1.4s ease-out forwards;
-      display: flex; align-items: center; gap: 4px;
-      white-space: nowrap;
+      position:fixed; pointer-events:none; z-index:999;
+      font-family:'DM Sans',sans-serif; font-size:18px; font-weight:700;
+      color:#f7d794; text-shadow:0 2px 8px rgba(0,0,0,.6),0 0 20px rgba(212,168,67,.8);
+      animation:coinRise 1.4s ease-out forwards;
+      display:flex; align-items:center; gap:4px; white-space:nowrap;
     }
     .coin-popup .coin-icon {
-      width: 22px; height: 22px;
-      background: radial-gradient(circle at 35% 35%, #ffe066, #d4a843, #8a6c1e);
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(212,168,67,0.6), inset 0 1px 2px rgba(255,255,255,0.5);
-      display: inline-block; flex-shrink: 0;
+      width:22px; height:22px;
+      background:radial-gradient(circle at 35% 35%,#ffe066,#d4a843,#8a6c1e);
+      border-radius:50%; box-shadow:0 2px 8px rgba(212,168,67,.6),inset 0 1px 2px rgba(255,255,255,.5);
+      display:inline-block; flex-shrink:0;
     }
     @keyframes coinRise {
-      0%   { opacity: 0; transform: translateY(0) scale(0.6); }
-      15%  { opacity: 1; transform: translateY(-10px) scale(1.1); }
-      60%  { opacity: 1; transform: translateY(-55px) scale(1); }
-      100% { opacity: 0; transform: translateY(-90px) scale(0.9); }
+      0%   { opacity:0; transform:translateY(0) scale(.6); }
+      15%  { opacity:1; transform:translateY(-10px) scale(1.1); }
+      60%  { opacity:1; transform:translateY(-55px) scale(1); }
+      100% { opacity:0; transform:translateY(-90px) scale(.9); }
     }
+    .coin-total { text-align:center; margin-top:6px; font-size:11px; color:rgba(255,255,255,.25); letter-spacing:.05em; transition:color .3s ease; }
+    .coin-total.bumped { color:rgba(212,168,67,.7); }
+    .deco-dots { position:absolute; top:18px; right:20px; display:flex; gap:5px; opacity:.3; }
+    .deco-dots span { width:5px; height:5px; border-radius:50%; background:var(--champagne); }
+    .deco-dots span:nth-child(2) { opacity:.6; } .deco-dots span:nth-child(3) { opacity:.3; }
+    .divider { height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); margin:20px 0; }
 
-    /* ── Total coins display ── */
-    .coin-total {
-      text-align: center;
-      margin-top: 6px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.25);
-      letter-spacing: 0.05em;
-      transition: color 0.3s ease;
+    /* ── Generator (landing) styles ── */
+    #generator { display:none; }
+    #generator .gen-title {
+      text-align:center; margin-bottom:24px;
     }
-    .coin-total.bumped { color: rgba(212,168,67,0.7); }
+    #generator h1 { font-size:clamp(1.6rem,6vw,2.2rem); }
+    #generator .subtitle { margin-top:6px; }
 
-    /* ── Decorative elements ── */
-    .deco-dots {
-      position: absolute; top: 18px; right: 20px;
-      display: flex; gap: 5px; opacity: 0.3;
+    .field-label {
+      display:block; font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+      color:rgba(255,255,255,.4); margin-bottom:6px;
     }
-    .deco-dots span {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--champagne);
+    .gen-input {
+      width:100%; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12); border-radius:12px;
+      padding:12px 16px; color:rgba(255,255,255,.9);
+      font-family:'DM Sans',sans-serif; font-size:14px;
+      outline:none; transition:border-color .2s ease;
     }
-    .deco-dots span:nth-child(2) { opacity: 0.6; }
-    .deco-dots span:nth-child(3) { opacity: 0.3; }
+    .gen-input:focus { border-color:rgba(201,97,122,.6); }
+    .gen-input::placeholder { color:rgba(255,255,255,.25); }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .field-group { margin-bottom:16px; }
 
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-      margin: 20px 0;
+    .btn-generate {
+      width:100%; border:none; cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+      border-radius:14px; padding:14px 20px; margin-top:4px;
+      background:linear-gradient(135deg,#c9617a 0%,#9b3060 40%,#d4a843 100%);
+      color:white; box-shadow:0 6px 28px rgba(201,97,122,.38);
+      transition:filter .15s ease,transform .15s ease;
+      position:relative; overflow:hidden;
     }
+    .btn-generate:hover { filter:brightness(1.1); }
+    .btn-generate:active { transform:scale(.97); }
+
+    .link-output {
+      margin-top:16px; background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08); border-radius:12px;
+      padding:14px 16px; display:none;
+    }
+    .link-label { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:6px; }
+    .link-value {
+      font-size:13px; color:rgba(212,168,67,.9); word-break:break-all;
+      font-family:monospace; line-height:1.5;
+    }
+    .link-actions { display:flex; gap:8px; margin-top:10px; }
+    .link-btn {
+      flex:1; padding:9px 12px; border-radius:10px; border:none; cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+      transition:filter .15s ease;
+    }
+    .link-btn-copy { background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); }
+    .link-btn-open { background:rgba(201,97,122,.25); color:rgba(201,97,122,.9); }
+    .link-btn:hover { filter:brightness(1.2); }
+
+    .gen-footer { text-align:center; margin-top:14px; font-size:11px; color:rgba(255,255,255,.18); letter-spacing:.06em; }
+    .gen-footer a { color:rgba(201,97,122,.5); text-decoration:none; }
+    .gen-footer a:hover { color:rgba(201,97,122,.8); }
+
+    /* card footer note */
+    .footer-note { text-align:center; font-size:11.5px; color:rgba(255,255,255,.22); letter-spacing:.08em; }
   </style>
 </head>
 <body>
@@ -297,436 +233,452 @@
 
 <div class="card-wrap">
   <div class="card">
-    <div class="crown-badge">✦ Special Day ✦</div>
-    <div class="deco-dots"><span></span><span></span><span></span></div>
 
-    <div class="card-header">
-      <h1>Happy Birthday,<br>Neha 🎂</h1>
-      <p class="subtitle">It's your day — own it</p>
+    <!-- ════════════ BIRTHDAY CARD VIEW ════════════ -->
+    <div id="card-view">
+      <div class="crown-badge">✦ Special Day ✦</div>
+      <div class="deco-dots"><span></span><span></span><span></span></div>
+
+      <div style="text-align:center; margin-bottom:6px;">
+        <h1 id="cardTitle">Happy Birthday 🎂</h1>
+        <p class="subtitle" id="cardSubtitle">It's your day — own it</p>
+      </div>
+
+      <div class="age-block">
+        <div class="age-label">You are exactly</div>
+        <div class="age-value" id="age">…</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:3px;">years young 🎈</div>
+        <div class="age-pulse"></div>
+      </div>
+
+      <div class="joke-box">
+        <p class="joke-text" id="joke"></p>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-wish" onclick="nextJoke()">Next Wish &nbsp;✨</button>
+        <button class="btn btn-gift" id="giftBtn" onclick="claimGift(event)">
+          <div class="btn-ripple"></div>
+          🎁&nbsp; Claim ₹500 Amazon Gift Card
+        </button>
+      </div>
+
+      <div class="gift-result" id="giftResult"></div>
+      <div class="coin-total" id="coinTotal"></div>
+
+      <div class="divider"></div>
+      <p class="footer-note">Made with 💜 by <a href="https://github.com/shawkeen/birthday" style="color:rgba(201,97,122,.6);text-decoration:none;">shawkeen</a> &nbsp;·&nbsp; <span id="makeYourOwn" style="cursor:pointer;color:rgba(212,168,67,.5);" onclick="showGenerator()">Make your own ↗</span></p>
     </div>
 
-    <div class="age-block">
-      <div class="age-label">You are exactly</div>
-      <div class="age-value" id="age">…</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.3); margin-top:3px;">years young 🎈</div>
-      <div class="age-pulse"></div>
+    <!-- ════════════ GENERATOR VIEW ════════════ -->
+    <div id="generator">
+      <div class="gen-title">
+        <h1>Birthday Card<br>Generator ✦</h1>
+        <p class="subtitle">Create a personalized link to share</p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="genName">Name</label>
+        <input class="gen-input" id="genName" type="text" placeholder="e.g. Neha" autocomplete="off" spellcheck="false" oninput="updateLink()">
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="genDay">Day</label>
+          <input class="gen-input" id="genDay" type="number" placeholder="DD" min="1" max="31" oninput="updateLink()">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="genMonth">Month</label>
+          <input class="gen-input" id="genMonth" type="number" placeholder="MM" min="1" max="12" oninput="updateLink()">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="genYear">Year of Birth</label>
+        <input class="gen-input" id="genYear" type="number" placeholder="YYYY" min="1900" max="2020" oninput="updateLink()">
+      </div>
+
+      <button class="btn-generate" onclick="generateLink()">Generate Link 🎉</button>
+
+      <div class="link-output" id="linkOutput">
+        <div class="link-label">Your Shareable Link</div>
+        <div class="link-value" id="linkValue"></div>
+        <div class="link-actions">
+          <button class="link-btn link-btn-copy" onclick="copyLink()">Copy Link</button>
+          <button class="link-btn link-btn-open" onclick="openLink()">Open Card ↗</button>
+        </div>
+      </div>
+
+      <div class="gen-footer">
+        <a href="#" onclick="showCard(event)">← Back to card</a> &nbsp;·&nbsp;
+        <a href="https://github.com/shawkeen/birthday" target="_blank">GitHub</a>
+      </div>
     </div>
 
-    <div class="joke-box">
-      <p class="joke-text" id="joke"></p>
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-wish" onclick="nextJoke()">Next Wish &nbsp;✨</button>
-
-      <button class="btn btn-gift" id="giftBtn" onclick="claimGift(event)">
-        <div class="btn-ripple"></div>
-        🎁&nbsp; Claim ₹500 Amazon Gift Card
-      </button>
-    </div>
-
-    <div class="gift-result" id="giftResult"></div>
-    <div class="coin-total" id="coinTotal"></div>
-
-    <div class="divider"></div>
-
-    <p style="text-align:center; font-size:11.5px; color:rgba(255,255,255,0.22); letter-spacing:0.08em;">
-      Made with 💜 just for you
-    </p>
   </div>
 </div>
 
 <script>
-  const personName = "Neha";
-  const birthDate  = new Date("1997-05-06T00:00:00");
+// ─────────────────────────────────────────
+// 1. ROUTE — parse name & dob from URL path
+// ─────────────────────────────────────────
+(function() {
+  // GitHub Pages 404 trick: restore stored path
+  var storedPath = sessionStorage.getItem('bday_path');
+  if (storedPath) {
+    sessionStorage.removeItem('bday_path');
+    history.replaceState(null, null, storedPath);
+  }
 
-  // ── Age live counter ──
+  var pathname = window.location.pathname; // e.g. /birthday/Neha/06051997/
+  var parts    = pathname.split('/').filter(Boolean);
+  // parts[0] = 'birthday' (repo base), parts[1] = name, parts[2] = DDMMYYYY
+
+  var rawName  = parts[1] ? decodeURIComponent(parts[1]) : '';
+  var dobStr   = parts[2] ? parts[2].replace(/\D/g,'') : '';
+
+  if (rawName && dobStr.length === 8) {
+    // ── Show the birthday card ──
+    var dd   = parseInt(dobStr.slice(0,2), 10);
+    var mm   = parseInt(dobStr.slice(2,4), 10) - 1; // 0-indexed month
+    var yyyy = parseInt(dobStr.slice(4,8), 10);
+
+    window._bday = {
+      name:      rawName,
+      birthDate: new Date(yyyy, mm, dd)
+    };
+    document.title = 'Happy Birthday ' + rawName + ' 🎂';
+    initCard();
+  } else {
+    // ── Show generator landing page ──
+    document.title = 'Birthday Card Generator';
+    document.getElementById('card-view').style.display = 'none';
+    document.getElementById('generator').style.display  = 'block';
+    // Hide crown badge since it's positioned for card
+    var badge = document.querySelector('.crown-badge');
+    if (badge) badge.style.display = 'none';
+  }
+})();
+
+// ─────────────────────────────────────────
+// 2. CARD LOGIC
+// ─────────────────────────────────────────
+function initCard() {
+  var name      = window._bday.name;
+  var birthDate = window._bday.birthDate;
+
+  // Personalise title
+  document.getElementById('cardTitle').textContent = 'Happy Birthday, ' + name + ' 🎂';
+
+  // Age ticker
   function updateAge() {
-    const ms    = Date.now() - birthDate.getTime();
-    const years = ms / (1000 * 60 * 60 * 24 * 365.2425);
-    document.getElementById("age").textContent = years.toFixed(6) + " yrs";
+    var ms    = Date.now() - birthDate.getTime();
+    var years = ms / (1000 * 60 * 60 * 24 * 365.2425);
+    document.getElementById('age').textContent = years.toFixed(6) + ' yrs';
   }
   updateAge();
   setInterval(updateAge, 50);
 
-  // ── Jokes ──
-  const jokes = [
-    `${personName}, you're not aging… you're just becoming a classic 😎`,
-    `Another year older, but definitely not wiser 😂`,
-    `Congrats! You're now officially vintage 🎂`,
-    `${personName}, at this point you're basically a collector's item`,
-    `Age is just a number… a really big one in your case 😆`,
-    `You're not old… just chronologically gifted`,
-    `More candles, less oxygen 🔥`,
-    `${personName}, you're aging like fine wine… slightly expensive too 🍷`,
-    `You're still younger than you'll be next year 😏`,
-    `You're leveling up… difficulty increased 🎮`,
-    `At your age, naps are no longer optional 😴`,
-    `${personName}, you're not old, you're retro`,
-    `Growing older is mandatory, growing up is optional`,
-    `You've reached the age where everything hurts 😬`,
-    `You're not getting older, just more legendary`,
-    `Cake gets smaller every year, candles get bigger`,
-    `You're now in the "back in my day" phase`,
-    `${personName}, your warranty just expired`,
-    `At this age, memory becomes optional`,
-    `You're officially too old for TikTok dances 😜`,
-    `Another year closer to senior discounts 💸`,
-    `${personName}, you've unlocked a new level of adulthood`,
-    `Every year you get closer to becoming a legend`,
-    `Your inner child is still alive… barely 😂`,
-    `${personName}, candles now cost more than cake`,
-    `You're still young… compared to dinosaurs 🦖`,
-    `${personName}, you're now officially an adult… good luck`,
-    `You're aging like WiFi… slower every year 😂`,
-    `${personName}, you're still young at heart… and joints`,
-    `Keep calm and pretend you're younger`,
-    `${personName}, you now make noises when you sit down 😆`,
-    `You've entered the "I was just resting my eyes" phase`,
-    `${personName}, you're basically running on low battery now 🔋`,
-    `Another birthday? Didn't you just have one last year?`,
-    `${personName}, you're one step closer to forgetting why you walked into a room`,
-    `You're aging like software… lots of updates needed`,
-    `${personName}, you're now a professional at doing nothing`,
-    `At your age, comfort > style`,
-    `${personName}, your favorite activity is now sitting`,
-    `You're at the age where snacks are a personality`,
-    `${personName}, you're aging like a meme… still funny`,
-    `At your age, excitement is cancelled plans`,
-    `${personName}, your back goes out more than you do`,
-    `Another year older, still acting the same 😂`,
-    `${personName}, your energy now depends on sleep quality`,
-    `At your age, early bedtime feels like a reward`,
-    `${personName}, your knees now predict the weather`,
-    `${personName}, you're not old… just technologically outdated 😂`,
-    `${personName}, your biggest flex is a full night's sleep`,
-    `You're not old, ${personName}… just chronologically overachieving`,
-    `At your age, ${personName}, your knees file complaints daily`,
-    `${personName}, your idea of adventure is finding a comfortable chair`,
-    `You're not getting older, ${personName}… just harder to reboot`,
-    `${personName}, you now need a warm-up before getting out of bed`,
-    `At this rate, ${personName}, your candles are a safety hazard`,
-    `${personName}, you're aging like a phone… battery drains faster every year`,
-    `${personName}, your memory now runs on "best effort" mode`,
-    `${personName}, your body now negotiates every movement`,
-    `You're not old, ${personName}… just permanently tired`,
-    `${personName}, you're basically running on snacks and nostalgia`,
-    `At your age, ${personName}, stairs are a personal attack`,
-    `You've reached the point, ${personName}, where silence feels luxurious`,
-    `At your age, ${personName}, your favorite hobby is cancelling plans`,
-    `You're not old, ${personName}… just well-used`,
-    `${personName}, your joints have started their own protest movement`,
-    `${personName}, your lifestyle now revolves around comfort`,
-    `${personName}, your idea of cardio is walking to the fridge`,
-    `At your age, ${personName}, your back goes out more than you do`,
-    `You've reached the age, ${personName}, where everything needs a cushion`,
-    `At your age, ${personName}, mornings feel like a system reboot`,
-    `${personName}, you're basically a legend… mostly in your own stories`,
-    `You're not getting older, ${personName}… just more breakable`,
-    `${personName}, your "quick break" lasts longer than movies`,
-    `You've reached peak ${personName} mode: low energy, high sarcasm`,
-    `${personName}, your energy drinks now just watch you fail`,
-    `${personName}, your hobbies include sitting, lying down, and reconsidering`,
-    `You're not old, ${personName}… just permanently on airplane mode`,
-    `At your age, ${personName}, excitement is a system error`,
-    `You've reached the age, ${personName}, where comfort is religion`,
-    `${personName}, your plans now come with cancellation insurance`,
-    `${personName}, your knees now complain before you do`,
-    `You've officially entered ${personName} OS: version permanently tired`,
-    `${personName}, your enthusiasm loads once per full moon 😂`,
-    `${personName}, you're not aging… you're just increasing loading time`,
-    `At this point, ${personName}, even your charger needs a break after charging you`,
-    `${personName}, even your reflection looks slightly concerned these days`,
-    `At your age, ${personName}, standing up counts as cardio AND achievement`,
-    `${personName}, your brain now opens apps like "Are you sure?"`,
-    `At this point, ${personName}, even your coffee needs coffee`,
-    `${personName}, your motivation left the group chat years ago`,
-    `${personName}, your body now requires admin approval for basic tasks`,
-    `At your age, ${personName}, weekends are just recovery sessions disguised as free time`,
-    `You're not lazy, ${personName}… you're just deeply committed to rest`,
-    `At this point, ${personName}, even your thoughts take scheduled appointments`,
-    `${personName}, your energy levels are now legally classified as "rare"`,
-    `You're not unfit, ${personName}… you're just in permanent low power mode`,
-    `At your age, ${personName}, even silence feels like effort`,
-    `${personName}, your naps have naps`,
-    `${personName}, your stamina is now on an extended sabbatical`,
-    `At your age, ${personName}, even your chair has an opinion about you`,
-    `You're not slow, ${personName}… you're just operating in cinematic slow motion`,
-    `At this point, ${personName}, even your shadow takes breaks`,
-    `${personName}, your life now runs on "minimum effort, maximum survival" mode`,
-    `At your age, ${personName}, even your patience needs patience`,
-    `You're not aging, ${personName}… you're just becoming more exclusive`,
-    `At this point, ${personName}, your biggest workout is thinking about working out 😂`,
-    `${personName}, you're not aging… you're just becoming a classic 😎`,
-    `Another year older, but definitely not wiser 😂`,
-    `Congrats! You're now officially vintage 🎂`,
-    `${personName}, at this point you're basically a collector’s item`,
-    `Age is just a number… a really big one in your case 😆`,
-    `You're not old… just chronologically gifted`,
-    `More candles, less oxygen 🔥`,
-    `${personName}, you're aging like fine wine… slightly expensive too 🍷`,
-    `You're still younger than you'll be next year 😏`,
-    `You're leveling up… difficulty increased 🎮`,
-    `At your age, naps are no longer optional 😴`,
-    `${personName}, you're not old, you're retro`,
-    `Growing older is mandatory, growing up is optional`,
-    `You’ve reached the age where everything hurts 😬`,
-    `You’re not getting older, just more legendary`,
-    `Cake gets smaller every year, candles get bigger`,
-    `You're now in the “back in my day” phase`,
-    `${personName}, your warranty just expired`,
-    `At this age, memory becomes optional`,
-    `You're officially too old for TikTok dances 😜`,
-    `Another year closer to senior discounts 💸`,
-    `You're aging like milk… just kidding 😂`,
-    `Birthdays are nature’s way of telling us to eat more cake`,
-    `You're not old… just well-seasoned`,
-    `${personName}, you’ve unlocked a new level of adulthood`,
-    `Wrinkles are just smile lines… right? 😆`,
-    `At your age, bedtime is exciting`,
-    `You're not over the hill yet… but you can see it`,
-    `You’ve entered the “oops I slept wrong” era`,
-    `You're basically a classic now`,
-    `${personName}, you're proof that age is just a suggestion`,
-    `Every year you get closer to becoming a legend`,
-    `Your inner child is still alive… barely 😂`,
-    `You're aging like a pro`,
-    `${personName}, candles now cost more than cake`,
-    `You're still young… compared to dinosaurs 🦖`,
-    `Another year, another excuse to party`,
-    `You’re now officially an adult… good luck`,
-    `Age is merely the number of years the world has been enjoying you`,
-    `${personName}, you're still fabulous… somehow 😎`,
-    `Time flies… especially at your age`,
-    `You're getting older, but not necessarily better`,
-    `You’ve reached expert level in birthdays`,
-    `${personName}, you're still glowing… must be the cake 🎂`,
-    `You’re now part of the “what was I saying?” club`,
-    `Another year, another grey hair`,
-    `You're aging like WiFi… slower every year 😂`,
-    `${personName}, you're still young at heart… and joints`,
-    `You’re officially timeless… mostly because time forgot you`,
-    `Keep calm and pretend you're younger`,
-    `${personName}, you're now at the age where scrolling is exercise 😂`,
-    `You're not old, you're just… experienced enough to complain`,
-    `${personName}, you’ve officially reached “I need a nap” age 😴`,
-    `At your age, happy hour is a nap`,
-    `You're aging like fine WiFi… slightly unstable`,
-    `${personName}, you now make noises when you sit down 😆`,
-    `Another year older, none the wiser`,
-    `You're not getting older, just harder to impress`,
-    `${personName}, you’ve unlocked “back pain” feature`,
-    `At your age, stretching counts as a workout`,
-    `You’ve entered the “I was just resting my eyes” phase`,
-    `${personName}, you're basically running on low battery now 🔋`,
-    `Another birthday? Didn’t you just have one last year?`,
-    `You're not old, you're just pre-owned`,
-    `${personName}, you're now officially a throwback`,
-    `You’ve reached the age where weekends are for recovery`,
-    `At your age, silence is golden`,
-    `${personName}, you're one step closer to forgetting why you walked into a room`,
-    `You're aging like software… lots of updates needed`,
-    `Another year, another reason to complain about kids these days`,
-    `${personName}, you're now a professional at doing nothing`,
-    `At your age, comfort > style`,
-    `You're not old, you're just highly upgraded`,
-    `${personName}, your favorite activity is now sitting`,
-    `Another year closer to becoming a legend in your own mind`,
-    `You're at the age where snacks are a personality`,
-    `${personName}, you're aging like a meme… still funny`,
-    `At your age, excitement is cancelled plans`,
-    `You're not getting older, you're just buffering`,
-    `${personName}, your back goes out more than you do`,
-    `Another year older, still acting the same 😂`,
-    `You're now officially older than your favorite memes`,
-    `${personName}, your energy now depends on sleep quality`,
-    `At your age, early bedtime feels like a reward`,
-    `You're not old, you're just well-debugged`,
-    `${personName}, you're basically a walking history lesson now`,
-    `Another year, another “I need coffee” moment`,
-    `You're at the age where comfort food wins`,
-    `${personName}, your knees now predict the weather`,
-    `You're aging like a classic song… slightly overplayed`,
-    `Another year older, still fabulous-ish 😆`,
-    `${personName}, you're now powered by caffeine`,
-    `At your age, plans are optional`,
-    `You're not old, you're just vintage premium`,
-    `${personName}, your idea of fun is doing nothing`,
-    `Another birthday? Time really flies… unlike you 😂`,
-    `You're now in the “did I lock the door?” phase`,
-    `${personName}, you're officially part of the nap club`,
-    `At your age, happiness is cancelling plans`,
-    `You're not aging, you're just becoming iconic`,
-    `${personName}, you're not old… but your birth year is starting to look historical`,
-    `At this point ${personName}, your candles need a fire extinguisher nearby 🔥`,
-    `${personName}, you’ve officially reached the age where your back has trust issues`,
-    `You’re not aging, ${personName}… you’re just increasing in maintenance cost 💸`,
-    `${personName}, your childhood is now considered “vintage content”`,
-    `At your age, ${personName}, your joints make more noise than your phone`,
-    `${personName}, you're basically a museum exhibit with WiFi`,
-    `You’ve aged so much, ${personName}, your secrets are now history lessons`,
-    `${personName}, you're not old—you’re just chronologically overachieving`,
-    `At your age, ${personName}, your knees file complaints daily`,
-    `${personName}, your idea of adventure is finding a comfortable chair`,
-    `You're not getting older, ${personName}… just harder to reboot`,
-    `${personName}, you now need a warm-up before getting out of bed`,
-    `At this rate, ${personName}, your candles are a safety hazard`,
-    `${personName}, you're aging like a phone… battery drains faster every year`,
-    `You’ve reached the age where, ${personName}, naps are mandatory survival`,
-    `${personName}, your memory now runs on “best effort” mode`,
-    `At your age, ${personName}, sitting down is easy—getting up is the challenge`,
-    `${personName}, your body now negotiates every movement`,
-    `You’re not old, ${personName}… just permanently tired`,
-    `${personName}, you're basically running on snacks and nostalgia`,
-    `At your age, ${personName}, your back tells you the weather forecast`,
-    `${personName}, your idea of “wild night” is staying awake past 11`,
-    `You're not aging, ${personName}—you’re just slowing down gracefully-ish`,
-    `${personName}, your energy levels now depend on one good nap`,
-    `At your age, ${personName}, stairs are a personal attack`,
-    `${personName}, you're not old… just technologically outdated 😂`,
-    `You’ve reached the point, ${personName}, where silence feels luxurious`,
-    `${personName}, your biggest flex is a full night’s sleep`,
-    `At your age, ${personName}, your favorite hobby is cancelling plans`,
-    `${personName}, you now celebrate small wins like finding good lighting`,
-    `You're not old, ${personName}… just well-used`,
-    `${personName}, your joints have started their own protest movement`,
-    `At your age, ${personName}, excitement needs recovery time`,
-    `${personName}, your lifestyle now revolves around comfort`,
-    `You're aging, ${personName}—but at least you’re consistent`,
-    `${personName}, your idea of cardio is walking to the fridge`,
-    `At your age, ${personName}, your back goes out more than you do`,
-    `${personName}, you're not old… just highly experienced at being tired`,
-    `You’ve reached the age, ${personName}, where everything needs a cushion`,
-    `${personName}, your patience increased… because your speed decreased`,
-    `At your age, ${personName}, mornings feel like a system reboot`,
-    `${personName}, you're basically a legend… mostly in your own stories`,
-    `You're not getting older, ${personName}… just more breakable`,
-    `${personName}, your comfort zone is now your entire personality`,
-    `At your age, ${personName}, doing nothing feels productive`,
-    `${personName}, you're not old… just permanently buffering`,
-    `You’ve reached peak “I need to sit down” energy, ${personName}`,
-    `${personName}, your life now runs on low power mode`,
-    `At your age, ${personName}, even your jokes need rest 😂`,
-    `${personName}, you're at that age where "quick nap" turns into a full system shutdown`,
-    `You don’t age, ${personName}… you level up in exhaustion`,
-    `${personName}, your energy now loads like a 2G internet connection`,
-    `At this point, ${personName}, even your bones ask for permission before moving`,
-    `${personName}, your glow-up came with a permanent low battery warning`,
-    `You’re not old, ${personName}… just permanently in recovery mode`,
-    `${personName}, your patience is strong because your speed is gone`,
-    `At your age, ${personName}, even walking feels like a scheduled event`,
-    `${personName}, your lifestyle is 80% sitting, 20% planning to sit`,
-    `You’ve reached the age, ${personName}, where excitement causes fatigue`,
-    `${personName}, your body now reacts like it’s reading terms and conditions`,
-    `At this point, ${personName}, even your thoughts need buffering`,
-    `${personName}, your back deserves its own birthday celebration`,
-    `You're not aging, ${personName}… you're upgrading to “frequent rest required” edition`,
-    `${personName}, your joints now sound like a snack bag in silence`,
-    `At your age, ${personName}, multitasking means breathing and existing`,
-    `${personName}, your idea of fun is cancelling plans you already made`,
-    `You’ve officially entered, ${personName}, “why did I come here?” era`,
-    `${personName}, your stamina left the chat years ago`,
-    `At this point, ${personName}, your calendar just says “rest”`,
-    `${personName}, your reflexes now run on emotional support`,
-    `You're not old, ${personName}… just permanently pre-heating for naps`,
-    `${personName}, your productivity peaks when you sit comfortably`,
-    `At your age, ${personName}, stairs feel like a plot twist`,
-    `${personName}, your motivation is on permanent vacation`,
-    `You’ve reached the age, ${personName}, where standing up is a commitment`,
-    `${personName}, your body now negotiates every simple task`,
-    `At this point, ${personName}, even your shadow looks tired`,
-    `${personName}, your idea of fitness is choosing the shortest route`,
-    `You're not aging, ${personName}… you're buffering in real life`,
-    `${personName}, your back now has opinions about your lifestyle`,
-    `At your age, ${personName}, even doing nothing feels like effort`,
-    `${personName}, your “quick break” lasts longer than movies`,
-    `You’ve reached peak Neha mode: low energy, high sarcasm`,
-    `${personName}, your energy drinks now just watch you fail`,
-    `At this point, ${personName}, even your thoughts need coffee`,
-    `${personName}, your hobbies include sitting, lying down, and reconsidering`,
-    `You're not old, ${personName}… just permanently on airplane mode`,
-    `${personName}, your productivity graph looks like a flatline with hope`,
-    `At your age, ${personName}, excitement is a system error`,
-    `${personName}, your body now updates itself in slow motion`,
-    `You’ve reached the age, ${personName}, where comfort is religion`,
-    `${personName}, your motivation clock stopped updating years ago`,
-    `At this point, ${personName}, your energy is a myth`,
-    `${personName}, your plans now come with cancellation insurance`,
-    `You're not aging, ${personName}… you're just conserving survival energy`,
-    `${personName}, your knees now complain before you do`,
-    `At your age, ${personName}, even resting needs recovery`,
-    `${personName}, your “I'll do it later” has become a lifestyle`,
-    `You’ve officially entered Neha OS: version permanently tired`,
-    `${personName}, your enthusiasm loads once per full moon 😂`,
-    `${personName}, your system updates now take longer than your motivation lasts`,
-    `At this point, ${personName}, even your charger needs a break after charging you`,
-    `${personName}, you're not aging… you're just increasing loading time`,
-    `Your energy, ${personName}, is now in “beta testing” permanently`,
-    `${personName}, even your reflection looks slightly concerned these days`,
-    `At your age, ${personName}, standing up counts as cardio AND achievement`,
-    `${personName}, your enthusiasm now arrives after the event is over`,
-    `You're not tired, ${personName}… you're in a long-term energy saving plan`,
-    `${personName}, your brain now opens apps like “Are you sure?”`,
-    `At this point, ${personName}, even your coffee needs coffee`,
-    `${personName}, your motivation left the group chat years ago`,
-    `You're not slow, ${personName}… you're just saving bandwidth`,
-    `${personName}, your body now requires admin approval for basic tasks`,
-    `At your age, ${personName}, weekends are just recovery sessions disguised as free time`,
-    `${personName}, your productivity is on vacation and forgot to come back`,
-    `You're not lazy, ${personName}… you're just deeply committed to rest`,
-    `${personName}, your “quick break” has become a lifestyle subscription`,
-    `At this point, ${personName}, even your thoughts take scheduled appointments`,
-    `${personName}, your energy levels are now legally classified as “rare”`,
-    `You're not unfit, ${personName}… you're just in permanent low power mode`,
-    `${personName}, your enthusiasm now loads in 240p`,
-    `At your age, ${personName}, even silence feels like effort`,
-    `${personName}, your bones now communicate louder than you do`,
-    `You're not aging badly, ${personName}… you're just experimenting with extreme efficiency`,
-    `${personName}, your body now needs permission slips for movement`,
-    `At this point, ${personName}, your naps have naps`,
-    `${personName}, your “I'll do it later” is now historical documentation`,
-    `You're not forgetful, ${personName}… you're just deleting unnecessary thoughts`,
-    `${personName}, your stamina is now on an extended sabbatical`,
-    `At your age, ${personName}, even your chair has an opinion about you`,
-    `${personName}, your energy drinks are emotionally supporting you at this point`,
-    `You're not slow, ${personName}… you're just operating in cinematic slow motion`,
-    `${personName}, your motivation is now a rare collectible item`,
-    `At this point, ${personName}, even your alarm clock feels tired of waking you up`,
-    `${personName}, your productivity graph has officially entered retirement`,
-    `You're not old, ${personName}… you're just “advanced edition human”`,
-    `${personName}, your body now files complaints before you even move`,
-    `At your age, ${personName}, doing nothing is still somehow exhausting`,
-    `${personName}, your energy now comes in limited seasonal drops`,
-    `You're not broken, ${personName}… just running legacy software`,
-    `${personName}, your enthusiasm is currently out of stock`,
-    `At this point, ${personName}, even your shadow takes breaks`,
-    `${personName}, your life now runs on “minimum effort, maximum survival” mode`,
-    `You're not tired, ${personName}… you're just permanently buffering existence`,
-    `${personName}, your motivation is currently unavailable in your region`,
-    `At your age, ${personName}, even your patience needs patience`,
-    `${personName}, your energy level is now a myth told to younger generations`,
-    `You're not aging, ${personName}… you're just becoming more exclusive`,
-    `${personName}, your system performance depends heavily on horizontal positioning`,
-    `At this point, ${personName}, your biggest workout is thinking about working out 😂`
-  ];
-
-  let lastJokeIdx = -1;
-  function nextJoke() {
-    let idx;
-    do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJokeIdx);
-    lastJokeIdx = idx;
-    const el = document.getElementById("joke");
-    el.classList.add("fade");
-    setTimeout(() => {
-      el.textContent = jokes[idx];
-      el.classList.remove("fade");
-    }, 350);
+  // Jokes
+  var jokes = buildJokes(name);
+  var lastIdx = -1;
+  window.nextJoke = function() {
+    var idx;
+    do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastIdx);
+    lastIdx = idx;
+    var el = document.getElementById('joke');
+    el.classList.add('fade');
+    setTimeout(function() { el.textContent = jokes[idx]; el.classList.remove('fade'); }, 350);
     launchConfetti();
-  }
-  nextJoke();
+  };
+  window.nextJoke();
 
-  // ── Gift prank ──
-  const pranks = [
+  // Gift prank
+  var pranks = buildPranks();
+  var totalCoins = 0;
+  window.claimGift = function(e) {
+    totalCoins++;
+    document.getElementById('giftResult').textContent = pranks[Math.floor(Math.random() * pranks.length)];
+    var totalEl = document.getElementById('coinTotal');
+    totalEl.textContent = 'Total imaginary coins collected: ₹' + totalCoins;
+    totalEl.classList.remove('bumped');
+    void totalEl.offsetWidth;
+    totalEl.classList.add('bumped');
+    setTimeout(function() { totalEl.classList.remove('bumped'); }, 800);
+    spawnCoinPopup();
+    playCoinChime();
+    launchConfetti();
+  };
+
+  launchConfetti();
+}
+
+// ─────────────────────────────────────────
+// 3. GENERATOR LOGIC
+// ─────────────────────────────────────────
+var BASE_URL = 'https://shawkeen.github.io/birthday/';
+
+function pad2(n) { return String(n).padStart(2,'0'); }
+
+function updateLink() { /* live update happens on generateLink click */ }
+
+function generateLink() {
+  var name  = document.getElementById('genName').value.trim();
+  var day   = document.getElementById('genDay').value.trim();
+  var month = document.getElementById('genMonth').value.trim();
+  var year  = document.getElementById('genYear').value.trim();
+
+  if (!name)  { alert('Please enter a name'); return; }
+  if (!day || !month || !year) { alert('Please fill in the date of birth'); return; }
+
+  var dobStr = pad2(parseInt(day)) + pad2(parseInt(month)) + year;
+  var link   = BASE_URL + encodeURIComponent(name) + '/' + dobStr + '/';
+
+  document.getElementById('linkValue').textContent = link;
+  document.getElementById('linkOutput').style.display = 'block';
+  window._generatedLink = link;
+}
+
+function copyLink() {
+  var link = window._generatedLink;
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(function() {
+    var btn = document.querySelector('.link-btn-copy');
+    btn.textContent = 'Copied ✓';
+    setTimeout(function() { btn.textContent = 'Copy Link'; }, 2000);
+  }).catch(function() {
+    prompt('Copy this link:', link);
+  });
+}
+
+function openLink() {
+  if (window._generatedLink) window.open(window._generatedLink, '_blank');
+}
+
+function showGenerator() {
+  document.getElementById('card-view').style.display = 'none';
+  document.getElementById('generator').style.display  = 'block';
+  var badge = document.querySelector('.crown-badge');
+  if (badge) badge.style.display = 'none';
+}
+
+function showCard(e) {
+  if (e) e.preventDefault();
+  document.getElementById('generator').style.display  = 'none';
+  document.getElementById('card-view').style.display = 'block';
+  var badge = document.querySelector('.crown-badge');
+  if (badge) badge.style.display = '';
+}
+
+// ─────────────────────────────────────────
+// 4. COIN POPUP + CHIME
+// ─────────────────────────────────────────
+function spawnCoinPopup() {
+  var btn  = document.getElementById('giftBtn');
+  var rect = btn.getBoundingClientRect();
+  var popup = document.createElement('div');
+  popup.className = 'coin-popup';
+  popup.innerHTML = '<span class="coin-icon"></span> +₹1';
+  popup.style.left = (rect.left + rect.width/2 - 40 + (Math.random()-.5)*60) + 'px';
+  popup.style.top  = (rect.top - 10) + 'px';
+  document.body.appendChild(popup);
+  setTimeout(function() { popup.remove(); }, 1450);
+}
+
+function playCoinChime() {
+  try {
+    var ctx   = new (window.AudioContext || window.webkitAudioContext)();
+    var notes = [{f:1046.5,s:0,d:.18},{f:1318.5,s:.08,d:.18},{f:1567.9,s:.16,d:.28}];
+    notes.forEach(function(n) {
+      var osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(n.f, ctx.currentTime + n.s);
+      gain.gain.setValueAtTime(0, ctx.currentTime + n.s);
+      gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + n.s + .01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.s + n.d);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + n.s); osc.stop(ctx.currentTime + n.s + n.d + .05);
+    });
+    setTimeout(function() { ctx.close(); }, 1200);
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────
+// 5. CONFETTI
+// ─────────────────────────────────────────
+var canvas = document.getElementById('confetti');
+var ctx2   = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+window.addEventListener('resize', function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+var particles = [];
+var SHAPES = ['rect','circle','star','heart'];
+var COLORS = ['#f7d794','#c9617a','#f5c6cb','#d4a843','#e8a0b0','#fff5cc','#b5a9f5','#a8e6cf'];
+
+function spawnParticle() {
+  return {
+    x: Math.random()*canvas.width, y:-10,
+    vx:(Math.random()-.5)*3, vy:Math.random()*3+1.5,
+    size:Math.random()*9+4,
+    shape:SHAPES[Math.floor(Math.random()*SHAPES.length)],
+    color:COLORS[Math.floor(Math.random()*COLORS.length)],
+    rotation:Math.random()*Math.PI*2, spin:(Math.random()-.5)*.15,
+    life:1, decay:Math.random()*.008+.004
+  };
+}
+
+function launchConfetti() {
+  for (var i=0; i<80; i++) {
+    (function(i){ setTimeout(function(){ particles.push(spawnParticle()); }, i*12); })(i);
+  }
+}
+
+function drawStar(x,y,r) {
+  ctx2.beginPath();
+  for (var i=0;i<5;i++){
+    var a1=(i*4*Math.PI/5)-Math.PI/2, a2=(i*4*Math.PI/5+2*Math.PI/5)-Math.PI/2;
+    if(i===0) ctx2.moveTo(x+r*Math.cos(a1),y+r*Math.sin(a1));
+    else ctx2.lineTo(x+r*Math.cos(a1),y+r*Math.sin(a1));
+    ctx2.lineTo(x+(r/2.2)*Math.cos(a2),y+(r/2.2)*Math.sin(a2));
+  }
+  ctx2.closePath();
+}
+
+function drawHeart(x,y,s) {
+  ctx2.beginPath();
+  ctx2.moveTo(x,y+s*.3);
+  ctx2.bezierCurveTo(x,y,x-s,y,x-s,y-s*.35);
+  ctx2.bezierCurveTo(x-s,y-s*.9,x,y-s*.9,x,y-s*.5);
+  ctx2.bezierCurveTo(x,y-s*.9,x+s,y-s*.9,x+s,y-s*.35);
+  ctx2.bezierCurveTo(x+s,y,x,y,x,y+s*.3);
+  ctx2.closePath();
+}
+
+(function loop() {
+  ctx2.clearRect(0,0,canvas.width,canvas.height);
+  particles = particles.filter(function(p){ return p.life>0 && p.y<canvas.height+20; });
+  particles.forEach(function(p) {
+    p.x+=p.vx; p.y+=p.vy; p.rotation+=p.spin; p.vy+=.04; p.life-=p.decay;
+    ctx2.save(); ctx2.globalAlpha=Math.max(0,p.life);
+    ctx2.translate(p.x,p.y); ctx2.rotate(p.rotation); ctx2.fillStyle=p.color;
+    if (p.shape==='rect')   { ctx2.fillRect(-p.size/2,-p.size/4,p.size,p.size/2); }
+    else if (p.shape==='circle') { ctx2.beginPath(); ctx2.arc(0,0,p.size/2,0,Math.PI*2); ctx2.fill(); }
+    else if (p.shape==='star')   { drawStar(0,0,p.size/2); ctx2.fill(); }
+    else                         { drawHeart(0,0,p.size/2.4); ctx2.fill(); }
+    ctx2.restore();
+  });
+  requestAnimationFrame(loop);
+})();
+
+// ─────────────────────────────────────────
+// 6. JOKE + PRANK DATA
+// ─────────────────────────────────────────
+function buildJokes(n) {
+  return [
+    n+", you're not aging… you're just becoming a classic 😎",
+    "Another year older, but definitely not wiser 😂",
+    "Congrats! You're now officially vintage 🎂",
+    n+", at this point you're basically a collector's item",
+    "Age is just a number… a really big one in your case 😆",
+    "You're not old… just chronologically gifted",
+    "More candles, less oxygen 🔥",
+    n+", you're aging like fine wine… slightly expensive too 🍷",
+    "You're still younger than you'll be next year 😏",
+    "You're leveling up… difficulty increased 🎮",
+    "At your age, naps are no longer optional 😴",
+    n+", you're not old, you're retro",
+    "Growing older is mandatory, growing up is optional",
+    "You've reached the age where everything hurts 😬",
+    "You're not getting older, just more legendary",
+    "Cake gets smaller every year, candles get bigger",
+    "You're now in the 'back in my day' phase",
+    n+", your warranty just expired",
+    "At this age, memory becomes optional",
+    "You're officially too old for TikTok dances 😜",
+    "Another year closer to senior discounts 💸",
+    n+", you've unlocked a new level of adulthood",
+    "Every year you get closer to becoming a legend",
+    "Your inner child is still alive… barely 😂",
+    n+", candles now cost more than cake",
+    "You're still young… compared to dinosaurs 🦖",
+    n+", you're now officially an adult… good luck",
+    "You're aging like WiFi… slower every year 😂",
+    n+", you're still young at heart… and joints",
+    "Keep calm and pretend you're younger",
+    n+", you now make noises when you sit down 😆",
+    "You've entered the 'I was just resting my eyes' phase",
+    n+", you're basically running on low battery now 🔋",
+    "Another birthday? Didn't you just have one last year?",
+    n+", you're one step closer to forgetting why you walked into a room",
+    "You're aging like software… lots of updates needed",
+    n+", you're now a professional at doing nothing",
+    "At your age, comfort > style",
+    "You're at the age where snacks are a personality",
+    n+", you're aging like a meme… still funny",
+    "At your age, excitement is cancelled plans",
+    n+", your back goes out more than you do",
+    "Another year older, still acting the same 😂",
+    n+", your energy now depends on sleep quality",
+    "At your age, early bedtime feels like a reward",
+    n+", your knees now predict the weather",
+    n+", you're not old… just technologically outdated 😂",
+    n+", your biggest flex is a full night's sleep",
+    "You're not old, "+n+"… just chronologically overachieving",
+    "At your age, "+n+", your knees file complaints daily",
+    n+", your idea of adventure is finding a comfortable chair",
+    "You're not getting older, "+n+"… just harder to reboot",
+    n+", you now need a warm-up before getting out of bed",
+    "At this rate, "+n+", your candles are a safety hazard",
+    n+", you're aging like a phone… battery drains faster every year",
+    n+", your memory now runs on 'best effort' mode",
+    n+", your body now negotiates every movement",
+    "You're not old, "+n+"… just permanently tired",
+    n+", you're basically running on snacks and nostalgia",
+    "At your age, "+n+", stairs are a personal attack",
+    "You've reached the point, "+n+", where silence feels luxurious",
+    "At your age, "+n+", your favorite hobby is cancelling plans",
+    "You're not old, "+n+"… just well-used",
+    n+", your joints have started their own protest movement",
+    n+", your lifestyle now revolves around comfort",
+    n+", your idea of cardio is walking to the fridge",
+    "At your age, "+n+", your back goes out more than you do",
+    "You've reached the age, "+n+", where everything needs a cushion",
+    "At your age, "+n+", mornings feel like a system reboot",
+    n+", you're basically a legend… mostly in your own stories",
+    "You're not getting older, "+n+"… just more breakable",
+    n+", your 'quick break' lasts longer than movies",
+    n+", your energy drinks now just watch you fail",
+    n+", your hobbies include sitting, lying down, and reconsidering",
+    "You're not old, "+n+"… just permanently on airplane mode",
+    "At your age, "+n+", excitement is a system error",
+    "You've reached the age, "+n+", where comfort is religion",
+    n+", your plans now come with cancellation insurance",
+    n+", your knees now complain before you do",
+    "You've officially entered "+n+" OS: version permanently tired",
+    n+", your enthusiasm loads once per full moon 😂",
+    n+", you're not aging… you're just increasing loading time",
+    n+", even your reflection looks slightly concerned these days",
+    "At your age, "+n+", standing up counts as cardio AND achievement",
+    n+", your brain now opens apps like 'Are you sure?'",
+    "At this point, "+n+", even your coffee needs coffee",
+    n+", your motivation left the group chat years ago",
+    n+", your body now requires admin approval for basic tasks",
+    "You're not lazy, "+n+"… you're just deeply committed to rest",
+    "At this point, "+n+", even your thoughts take scheduled appointments",
+    n+", your energy levels are now legally classified as 'rare'",
+    "At your age, "+n+", even silence feels like effort",
+    n+", your naps have naps",
+    n+", your stamina is now on an extended sabbatical",
+    "At your age, "+n+", even your chair has an opinion about you",
+    "You're not slow, "+n+"… you're just operating in cinematic slow motion",
+    "At this point, "+n+", even your shadow takes breaks",
+    n+", your life now runs on 'minimum effort, maximum survival' mode",
+    "At your age, "+n+", even your patience needs patience",
+    "At this point, "+n+", your biggest workout is thinking about working out 😂"
+  ];
+}
+
+function buildPranks() {
+  return [
     "🎉 ₹500 Amazon Gift Card unlocked… in an alternate universe 😄",
     "❌ Transaction failed: Reason = you're priceless (emotionally broke though 😂)",
     "💸 ₹500 credited… just kidding, go earn it 😆",
@@ -743,229 +695,22 @@
     "🎉 You are selected for exclusive fake millionaire program",
     "💰 ₹500 successfully deposited into your imagination wallet",
     "⚠️ Bank update: you are still broke but funny",
-    "🤣 Amazon says: 'nice try future billionaire'",
+    "🤣 Amazon says: nice try future billionaire",
     "💳 Transaction complete… in parallel universe server",
     "🚫 Insufficient reality balance to process ₹500",
-    "🎉 You just unlocked invisible money achievement",
     "😂 Gift card status: vaporized but funny",
     "😎 You now own ₹500 worth of fake confidence",
     "⚠️ System message: money temporarily allergic to you",
     "🧠 You are now officially a fake rich person",
     "🎁 Final reward: friendship stronger than money ❤️",
-    "😂 Amazon AI said: 'focus on working bro'",
+    "😂 Amazon AI said: focus on working bro",
     "🚫 Declined: reason = too many birthday jokes",
     "🤣 Amazon says: stop dreaming and start coding",
     "🎉 Congratulations! You broke the fake economy system",
     "💳 ₹500 gift card is currently buffering… forever",
-    "🎉 ₹500 Amazon Gift Card unlocked… in an alternate universe 😄",
-    "❌ Transaction failed: Reason = you're priceless (emotionally broke though 😂)",
-    "💸 ₹500 credited… just kidding, go earn it 😆",
-    "🎁 Reward: unlimited birthday wishes instead of money ❤️",
-    "⚠️ Server says: money not found, sarcasm loaded successfully",
-    "😂 Amazon response: nice try, buddy",
-    "💀 ₹500 gift card status: imaginary but funny",
-    "🧠 Reward unlocked: emotional damage +1",
-    "🚫 Access denied: friendship tax applied 😂",
-    "😎 You are now ₹500 richer… in dreams",
-    "🎉 ₹500 Amazon Gift Card unlocked… but only in your imagination 😄",
-    "❌ Payment failed: reason = you already spent it in dreams 😂",
-    "💸 ₹500 credited successfully… to your fictional bank account",
-    "🎁 Congrats! You earned ₹500… in emotional currency ❤️",
-    "⚠️ Amazon servers said: ‘bro seriously?’ and declined your request",
-    "😂 Reward unlocked: ₹500 + infinite sarcasm bundle",
-    "🚫 Transaction rejected: reason = friendship too strong to monetize",
-    "💀 ₹500 gift card is real… in an alternate timeline",
-    "🎉 You are now ₹500 richer… in Monopoly money",
-    "🧠 Bonus reward: 1 unit of disappointment + nostalgia",
-    "💳 Payment approved… by nobody, ever",
-    "📦 Your ₹500 gift card is out for delivery since 1897",
-    "😎 Congrats! You just hacked imagination-based banking",
-    "❌ Error 404: gift card not found, humor found instead",
-    "🎁 You unlocked premium reward: free laughter subscription",
-    "💸 ₹500 sent… please check your dream inbox",
-    "🚨 Amazon Alert: stop trying bro 😂",
-    "😂 Reward: emotional damage + cashback of zero",
-    "🎉 You are selected for exclusive fake millionaire program",
-    "💰 ₹500 successfully deposited into your imagination wallet",
-    "⚠️ Bank update: you are still broke but funny",
-    "🎁 Surprise! Your reward is… another birthday joke",
-    "🤣 Amazon says: ‘nice try future billionaire’",
-    "💳 Transaction complete… in parallel universe server",
-    "🚫 Insufficient reality balance to process ₹500",
-    "🎉 You just unlocked invisible money achievement",
-    "💸 ₹500 credited… but inflation ate it instantly",
-    "😂 Gift card status: vaporized but funny",
-    "📦 Delivery attempted but recipient too legendary to deliver to",
-    "😎 You now own ₹500 worth of fake confidence",
-    "🎁 Reward unlocked: unlimited imaginary shopping spree",
-    "⚠️ System message: money temporarily allergic to you",
-    "💀 ₹500 gift card ran away from responsibility",
-    "🎉 You’ve been awarded premium fake cashback",
-    "😂 Amazon AI said: ‘focus on working bro’",
-    "💳 ₹500 approved… in simulation mode only",
-    "🚫 Bank status: still broke, still iconic",
-    "🎁 Congrats! You won nothing but got this message",
-    "💸 ₹500 added… minus tax of reality",
-    "🤣 You are now officially a fake rich person",
-    "🎉 Reward unlocked: zero rupees, maximum fun",
-    "💰 Amazon: ‘we admire your imagination’",
-    "⚠️ ₹500 gift card expired before it existed",
-    "😂 Transaction approved by sarcasm department",
-    "🎁 You now qualify for imaginary VIP shopping",
-    "💸 ₹500 transferred to your brain wallet",
-    "🚫 Declined: reason = too many birthday jokes",
-    "🎉 Congratulations! You broke the fake economy system",
-    "🤣 Amazon says: stop dreaming and start coding",
-    "💳 ₹500 gift card is currently buffering… forever",
-    "🎁 Final reward: friendship stronger than money ❤️"
+    "🎁 You unlocked premium reward: free laughter subscription"
   ];
-
-  let totalCoins = 0;
-  function claimGift(e) {
-    totalCoins++;
-    // prank text
-    const msg = pranks[Math.floor(Math.random() * pranks.length)];
-    document.getElementById("giftResult").textContent = msg;
-
-    // coin total
-    const totalEl = document.getElementById("coinTotal");
-    totalEl.textContent = `Total imaginary coins collected: ₹${totalCoins}`;
-    totalEl.classList.remove("bumped");
-    void totalEl.offsetWidth;
-    totalEl.classList.add("bumped");
-    setTimeout(() => totalEl.classList.remove("bumped"), 800);
-
-    // floating popup
-    spawnCoinPopup(e);
-    playCoinChime();
-    launchConfetti();
-  }
-
-  function spawnCoinPopup(e) {
-    const btn = document.getElementById("giftBtn");
-    const rect = btn.getBoundingClientRect();
-    const x = rect.left + rect.width / 2 - 40;
-    const y = rect.top - 10;
-
-    const popup = document.createElement("div");
-    popup.className = "coin-popup";
-    popup.innerHTML = `<span class="coin-icon"></span> +₹1`;
-    popup.style.left = (x + (Math.random() - 0.5) * 60) + "px";
-    popup.style.top  = y + "px";
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 1450);
-  }
-
-  // ── Web Audio coin chime ──
-  function playCoinChime() {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const notes = [
-        { freq: 1046.5, start: 0,    dur: 0.18 },
-        { freq: 1318.5, start: 0.08, dur: 0.18 },
-        { freq: 1567.9, start: 0.16, dur: 0.28 },
-      ];
-      notes.forEach(({ freq, start, dur }) => {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
-        gain.gain.setValueAtTime(0, ctx.currentTime + start);
-        gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + start + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + start);
-        osc.stop(ctx.currentTime + start + dur + 0.05);
-      });
-      setTimeout(() => ctx.close(), 1200);
-    } catch(e) {}
-  }
-
-  // ── Confetti ──
-  const canvas = document.getElementById("confetti");
-  const ctx2   = canvas.getContext("2d");
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  window.addEventListener("resize", () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
-  let particles = [];
-  const SHAPES  = ["rect","circle","star","heart"];
-  const COLORS  = ["#f7d794","#c9617a","#f5c6cb","#d4a843","#e8a0b0","#fff5cc","#b5a9f5","#a8e6cf"];
-
-  function spawnParticle() {
-    const x = Math.random() * canvas.width;
-    return {
-      x, y: -10,
-      vx: (Math.random() - 0.5) * 3,
-      vy: Math.random() * 3 + 1.5,
-      size: Math.random() * 9 + 4,
-      shape: SHAPES[Math.floor(Math.random() * SHAPES.length)],
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      rotation: Math.random() * Math.PI * 2,
-      spin: (Math.random() - 0.5) * 0.15,
-      life: 1,
-      decay: Math.random() * 0.008 + 0.004
-    };
-  }
-
-  function launchConfetti() {
-    for (let i = 0; i < 80; i++) {
-      setTimeout(() => particles.push(spawnParticle()), i * 12);
-    }
-  }
-
-  function drawStar(cx, cy, r) {
-    ctx2.beginPath();
-    for (let i = 0; i < 5; i++) {
-      const a1 = (i * 4 * Math.PI / 5) - Math.PI / 2;
-      const a2 = (i * 4 * Math.PI / 5 + 2 * Math.PI / 5) - Math.PI / 2;
-      if (i === 0) ctx2.moveTo(cx + r * Math.cos(a1), cy + r * Math.sin(a1));
-      else ctx2.lineTo(cx + r * Math.cos(a1), cy + r * Math.sin(a1));
-      ctx2.lineTo(cx + (r/2.2) * Math.cos(a2), cy + (r/2.2) * Math.sin(a2));
-    }
-    ctx2.closePath();
-  }
-
-  function drawHeart(cx, cy, s) {
-    ctx2.beginPath();
-    ctx2.moveTo(cx, cy + s * 0.3);
-    ctx2.bezierCurveTo(cx, cy, cx - s, cy, cx - s, cy - s * 0.35);
-    ctx2.bezierCurveTo(cx - s, cy - s * 0.9, cx, cy - s * 0.9, cx, cy - s * 0.5);
-    ctx2.bezierCurveTo(cx, cy - s * 0.9, cx + s, cy - s * 0.9, cx + s, cy - s * 0.35);
-    ctx2.bezierCurveTo(cx + s, cy, cx, cy, cx, cy + s * 0.3);
-    ctx2.closePath();
-  }
-
-  function loop() {
-    ctx2.clearRect(0, 0, canvas.width, canvas.height);
-    particles = particles.filter(p => p.life > 0 && p.y < canvas.height + 20);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      p.rotation += p.spin;
-      p.vy += 0.04;
-      p.life -= p.decay;
-      ctx2.save();
-      ctx2.globalAlpha = Math.max(0, p.life);
-      ctx2.translate(p.x, p.y);
-      ctx2.rotate(p.rotation);
-      ctx2.fillStyle = p.color;
-      if (p.shape === "rect") {
-        ctx2.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-      } else if (p.shape === "circle") {
-        ctx2.beginPath(); ctx2.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx2.fill();
-      } else if (p.shape === "star") {
-        drawStar(0, 0, p.size / 2); ctx2.fill();
-      } else {
-        drawHeart(0, 0, p.size / 2.4); ctx2.fill();
-      }
-      ctx2.restore();
-    });
-    requestAnimationFrame(loop);
-  }
-  loop();
-
-  // auto confetti on load
-  launchConfetti();
+}
 </script>
 </body>
 </html>
