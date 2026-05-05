@@ -424,14 +424,25 @@ function updateLink() { /* live update happens on generateLink click */ }
 
 function generateLink() {
   var name  = document.getElementById('genName').value.trim();
-  var day   = document.getElementById('genDay').value.trim();
-  var month = document.getElementById('genMonth').value.trim();
-  var year  = document.getElementById('genYear').value.trim();
+  var day   = parseInt(document.getElementById('genDay').value, 10);
+  var month = parseInt(document.getElementById('genMonth').value, 10);
+  var year  = parseInt(document.getElementById('genYear').value, 10);
 
-  if (!name)  { alert('Please enter a name'); return; }
-  if (!day || !month || !year) { alert('Please fill in the date of birth'); return; }
+  if (!name)                          { alert('Please enter a name'); return; }
+  if (!day || !month || !year)        { alert('Please fill in the full date of birth'); return; }
+  if (day < 1   || day > 31)         { alert('Day must be between 1 and 31'); return; }
+  if (month < 1 || month > 12)       { alert('Month must be between 1 and 12'); return; }
+  if (year < 1900 || year > new Date().getFullYear()) {
+    alert('Year must be between 1900 and ' + new Date().getFullYear()); return;
+  }
 
-  var dobStr = pad2(parseInt(day)) + pad2(parseInt(month)) + year;
+  // Validate the date actually exists (e.g. rejects 31 Feb, 31 Apr)
+  var testDate = new Date(year, month - 1, day);
+  if (testDate.getFullYear() !== year || testDate.getMonth() !== month - 1 || testDate.getDate() !== day) {
+    alert('That date doesn\'t exist — please check day/month'); return;
+  }
+
+  var dobStr = pad2(day) + pad2(month) + year;
   var link   = BASE_URL + encodeURIComponent(name) + '/' + dobStr + '/';
 
   document.getElementById('linkValue').textContent = link;
